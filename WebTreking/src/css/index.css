@@ -1,0 +1,233 @@
+[data-theme="dark"]{
+    --body-background: #000e16;
+    --body-text: #b1ff5c;
+    --header-background: #00080c;
+    --footer-background: #00080c;
+}
+body{
+    background: var(--body-background);
+    color: var(--body-text);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+button {
+    background: transparent;
+    color: var(--body-text);
+    border: none;
+    cursor: pointer;
+}
+header {
+    width: calc(100vw - 40px);
+    height: max-content;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    background: var(--header-background);
+    backdrop-filter: blur(20px);
+    position: fixed;
+    top: 0;
+    z-index: 999;
+}
+footer {
+    position: relative;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    background: var(--footer-background);
+    z-index: 999;
+}
+main#content {
+    min-height: 81vh;
+    margin: 0 auto;
+}
+.h-container{
+    width: 1340px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+}
+header span.title {
+    font-size: 30px;
+    user-select: none;
+}
+header nav button {
+    cursor: pointer;
+    user-select: none;
+    background: transparent;
+    color: var(--body-text);
+    border: none;
+    font-size: 18px;
+    transition: .3s;
+}
+header nav button:hover {
+    text-shadow: 0px 0px 10px var(--body-text);
+    transition: .3s;
+}
+header nav button.active {
+    text-shadow: 0px 0px 10px var(--body-text);
+    text-decoration: underline;
+    transition: .3s;
+}
+header nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+}
+header .page-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+section {
+    margin-top: 74px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    min-height: 80vh;
+}
+section .container{
+    width: 1340px;
+    margin: 0 auto;
+}
+.treking-container{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.treking-menu {    
+    background: #00141e;
+    backdrop-filter: blur(20px);
+    top: 0;
+    left: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    position: fixed;
+    padding: 0 13px;
+}
+nav.treking-nav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 20px;
+}
+.treking__warp{
+    width: 100%;
+    border: 1px solid;
+    min-height: 300px;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 0px 0px 40px;
+}
+.treking__warp .folder {
+    width: 100%;
+    background: var(--header-background);
+    min-height: 60px;
+}
+.header-treking {
+    background: var(--body-text);
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 0 30px;
+    gap: 20px;
+}
+.header-treking button{
+    color: var(--body-background);
+    font-size: 30px;
+}
+.folder {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 1fr 1fr;
+    user-select: none;
+    cursor: pointer;
+}
+table.container_folder_treking {
+    width: 100%;
+}
+.folderNotFound{
+    font-size: 28px;
+    text-align: center;
+    height: 100%;
+}
+th.info_folder {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+.task-window {
+    position: absolute;
+    min-width: 300px;
+    min-height: 500px;
+    background: #00141e;
+    top: 20%;
+    left: 40%;
+    border: 1PX SOLID;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: #000 0 0 10px 0px;
+}
+.task-window-header {
+    background: var(--header-background);
+    color: var(--body-text);
+    padding: 10px;
+    font-size: 20px;
+    z-index: 9999;
+    cursor: grab;
+    display: grid;
+    grid-template-columns: 1fr 0.1fr;
+}
+.task-window-header button {
+    cursor: pointer;
+}
+span.WindowFolderName {
+    width: 100%;
+    text-align: center;
+}
+.task-window-footer{
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+.task-window-footer button {
+    width: 40px;
+    height: 30px;
+}
+.task-window-footer button {
+    font-size: 30px;
+}
+.task-window-content {
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+.task-item {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}

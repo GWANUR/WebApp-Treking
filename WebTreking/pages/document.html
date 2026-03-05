@@ -1,0 +1,13 @@
+<tr class="folder" id="folder-${index+1}">
+    <th class="left">
+        <span class="folder_name">${name}</span>
+    </th>
+    <th class="info_folder">
+        <span class="tasks_count">Tasks: ${Object.keys(tasks).length}</span>
+        <span class="tasks_ready">Ready: ${readyTasks}</span>
+    </th>
+    <th class="active">
+        <button class="rename" onclick="renameFolder(${index+1})">Rename</button>
+        <button class="remove" onclick="removeFolder(${index+1})">Remove</button>
+    </th>
+</tr>
