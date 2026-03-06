@@ -1,6 +1,14 @@
 @echo off
 cd /d "%~dp0"
 
+echo Checking data file...
+
+if not exist "WebTreking\src\data\treking.JSON" (
+echo Creating treking.JSON
+mkdir "WebTreking\src\data" 2>nul
+echo { "FOLDER": [] } > "WebTreking\src\data\treking.JSON"
+)
+
 echo Detecting local IPv4...
 
 for /f "tokens=2 delims=:" %%i in ('ipconfig ^| findstr /i "IPv4"') do (
