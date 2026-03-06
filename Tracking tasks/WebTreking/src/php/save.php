@@ -30,6 +30,7 @@ if (in_array($newName, $existingNames)) {
 // Добавляем новую папку
 $jsonData['FOLDER'][] = [
     'Name' => $newName,
+    'date' => date('Y-m-d H:i:s'),
     'tasks' => []
 ];
 

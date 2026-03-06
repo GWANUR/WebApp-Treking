@@ -32,6 +32,19 @@ header {
     top: 0;
     z-index: 999;
 }
+
+input[type="text"] {
+    background: transparent;
+    border: 1px solid var(--body-text);
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: var(--body-text);
+}
+input[type="text"]::placeholder {
+    color: #567e2c; 
+    opacity: 1; 
+}
+
 footer {
     position: relative;
     height: 100px;
@@ -139,6 +152,7 @@ nav.treking-nav {
     width: 100%;
     background: var(--header-background);
     min-height: 60px;
+    padding: 0 70px;
 }
 .header-treking {
     background: var(--body-text);
@@ -177,6 +191,8 @@ th.info_folder {
     position: absolute;
     min-width: 300px;
     min-height: 500px;
+    max-width: 600px;
+    max-height: 600px;
     background: #00141e;
     top: 20%;
     left: 40%;
@@ -197,10 +213,14 @@ th.info_folder {
 }
 .task-window-header button {
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 span.WindowFolderName {
     width: 100%;
     text-align: center;
+    user-select: none;
 }
 .task-window-footer{
     position: absolute;
@@ -230,4 +250,12 @@ span.WindowFolderName {
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
+    gap: 20px;
+}
+button.toggleTask i {
+    font-size: 18px;
+}
+.task-window-header i {
+    font-size: 18px;
+    line-height: 0em;
 }

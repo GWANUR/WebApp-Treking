@@ -11,7 +11,7 @@ $currentStatus = $jsonData['FOLDER'][$folderIndex - 1]['tasks'][$taskIndex]['sta
 
 $jsonData['FOLDER'][$folderIndex - 1]['tasks'][$taskIndex]['status'] = !$currentStatus;
 
-file_put_contents($file, json_encode($jsonData, JSON_PRETTY_PRINT));
+file_put_contents($file, json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
 
 echo json_encode(["success" => true]);

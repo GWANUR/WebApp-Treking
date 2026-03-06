@@ -9,10 +9,20 @@ function loadPage(page) {
         .then(data => {
             document.getElementById("content").innerHTML = data;
 
-            // 👇 Если это страница treking — загружаем JSON
+            // Сохраняем активную страницу в localStorage
+            localStorage.setItem('activePage', page);
+
+            // Если это страница traking — загружаем JSON
             if (page === "traking") {
                 loadTrekingData();
             }
+
+            // Обновляем класс active у кнопок меню
+            document.querySelectorAll("header nav button").forEach(btn => {
+                btn.classList.remove("active");
+            });
+            const activeBtn = document.querySelector(`header nav button[data-page="${page}"]`);
+            if (activeBtn) activeBtn.classList.add("active");
         })
         .catch(error => {
             document.getElementById("content").innerHTML =
@@ -105,7 +115,7 @@ function addFolder() {
     newFolder.classList.add('new_folder');
     newFolder.classList.add('folder');
     newFolder.innerHTML = `
-        <input type="text" class="folder_name" value="New folder"> 
+        <input type="text" class="folder_name" placeholder="Add a new folder..." value="New folder"> 
         <button onclick="event.stopPropagation(); saveNewFolderName(this.parentElement)">Save</button>
         <button onclick="event.stopPropagation(); loadTrekingData()">Undo</button>
     `;
@@ -144,10 +154,11 @@ function loadTrekingData() {
             }
             folders.forEach((folder, index) => {
                 const name = folder.Name;
-                const tasks = folder.tasks;
+                const tasks = folder.tasks || {};
+                const taskArray = Array.isArray(tasks) ? tasks : Object.values(tasks);
 
-                const totalTasks = Object.keys(tasks).length;
-                const readyTasks = tasks.filter(task => task.status).length;
+                const totalTasks = taskArray.length;
+                const readyTasks = taskArray.filter(task => task.status).length;
 
                 container.innerHTML += `
                     <tr onclick="loadWindowTasks(${index + 1})" class="folder" id="folder-${index + 1}">
@@ -159,8 +170,12 @@ function loadTrekingData() {
                             <span class="tasks_ready">Ready: ${readyTasks}</span>
                         </th>
                         <th class="active">
-                            <button class="rename" onclick="event.stopPropagation(); renameFolder(${index + 1})"><i class="bi bi-pencil"></i> Rename</button>
-                            <button class="remove" onclick="event.stopPropagation(); removeFolder(${index + 1})"><i class="bi bi-trash3"></i> Remove</button>
+                            <button class="rename" onclick="event.stopPropagation(); renameFolder(${index + 1})">
+                                <i class="bi bi-pencil"></i> Rename
+                            </button>
+                            <button class="remove" onclick="event.stopPropagation(); removeFolder(${index + 1})">
+                                <i class="bi bi-trash3"></i> Remove
+                            </button>
                         </th>
                     </tr>
                 `;
@@ -191,7 +206,7 @@ function renameFolder(index) {
     const nameElement = folderElement.querySelector('.folder_name');
     const currentName = nameElement.textContent;
     nameElement.innerHTML = `
-    <input type="text" class="folder_rename" value="${currentName}" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" onkeydown="event.stopPropagation()">
+    <input type="text" class="folder_rename" placeholder="Rename folder..." value="${currentName}" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" onkeydown="event.stopPropagation()">
     <button onclick="event.stopPropagation(); saveRenamedFolder(${index}, this.parentElement.querySelector('input').value)">Save</button>
     <button onclick="event.stopPropagation();loadTrekingData()">Undo</button>
     `;
@@ -244,6 +259,10 @@ function loadWindowTasks(folderIndex) {
 function openTrack(folderIndex) {
     const url = `pages/tracking/tracking.php?folderIndex=${folderIndex}`;
     window.open(url, '_blank');
+    const ThisWindow = document.getElementById(`task-window-${folderIndex}`);
+    if (ThisWindow) {
+        ThisWindow.remove(); 
+    }
 }
 function addTask(folderIndex, windowId) {
     const windowEl = document.getElementById(windowId);
@@ -251,7 +270,7 @@ function addTask(folderIndex, windowId) {
     var newTask = document.createElement('div');
     newTask.classList.add('new_task');
     newTask.innerHTML = `
-        <input type="text" class="task_name" value="New task"> 
+        <input type="text" class="task_name" placeholder="Add a new task..." value="New task"> 
         <button onclick="event.stopPropagation(); saveNewTask(${folderIndex}, this.parentElement.querySelector('input').value)">Save</button>
         <button onclick="event.stopPropagation(); loadTasks(${folderIndex})">Undo</button>
     `;
@@ -346,7 +365,9 @@ function closeWindow(windowId) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    document.querySelector('.home').click();
+    const lastPage = localStorage.getItem('activePage') || 'home';
+    loadPage(lastPage);
+
     var treking = document.querySelector('.treking__warp')
 
     document.querySelectorAll("header nav button").forEach(button => {

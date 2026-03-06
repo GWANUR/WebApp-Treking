@@ -1,0 +1,177 @@
+<?php
+
+define('TREKING_FILE', __DIR__ . '/../../src/data/treking.JSON');
+
+function getFolderName($folderIndex) {
+    $index = intval($folderIndex) - 1;
+
+    if (!file_exists(TREKING_FILE)) {
+        return null;
+    }
+
+    $json = json_decode(file_get_contents(TREKING_FILE), true);
+
+    if (!isset($json['FOLDER'][$index])) {
+        return null;
+    }
+
+    return $json['FOLDER'][$index]['Name'] ?? "Unknown Folder";
+}
+
+function getSettings($key) {
+    if (!file_exists(TREKING_FILE)) {
+        return null;
+    }
+
+    $json = json_decode(file_get_contents(TREKING_FILE), true);
+
+    return $json['SETTINGS'][$key] ?? null;
+}
+
+function deleteTask($folderIndex, $taskIndex) {
+
+    if (!file_exists(TREKING_FILE)) {
+        return ['success' => false];
+    }
+
+    $folder = intval($folderIndex);
+    $json = json_decode(file_get_contents(TREKING_FILE), true);
+
+    if (!isset($json['FOLDER'][$folder]['tasks']) || !is_array($json['FOLDER'][$folder]['tasks'])) {
+        return ['success' => false];
+    }
+
+    unset($json['FOLDER'][$folder]['tasks'][$taskIndex]);
+
+    $json['FOLDER'][$folder]['tasks'] = array_values($json['FOLDER'][$folder]['tasks']);
+
+    file_put_contents(
+        TREKING_FILE,
+        json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+    );
+
+    return ['success' => true];
+}
+
+function addTask($folderIndex, $taskName) {
+
+    if (!file_exists(TREKING_FILE)) {
+        echo json_encode(['success' => false, 'message' => 'File not found']);
+        exit;
+    }
+
+    $json = json_decode(file_get_contents(TREKING_FILE), true);
+
+    if (!isset($json['FOLDER'][$folderIndex])) {
+        echo json_encode(['success' => false, 'message' => 'Folder not found']);
+        exit;
+    }
+
+    if (!isset($json['FOLDER'][$folderIndex]['tasks']) || !is_array($json['FOLDER'][$folderIndex]['tasks'])) {
+        $json['FOLDER'][$folderIndex]['tasks'] = [];
+    }
+
+    foreach ($json['FOLDER'][$folderIndex]['tasks'] as $task) {
+        if ($task['Name'] === $taskName) {
+            echo json_encode(['success' => false, 'message' => 'Task already exists']);
+            exit;
+        }
+    }
+
+    $json['FOLDER'][$folderIndex]['tasks'][] = [
+        'Name' => $taskName,
+        'status' => false
+    ];
+
+    file_put_contents(
+            TREKING_FILE,
+            json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE| JSON_UNESCAPED_SLASHES)
+        );
+
+    echo json_encode(['success' => true, 'message' => 'Task toggled']);
+    exit;
+
+    echo json_encode(['success' => true, 'message' => 'Task added']);
+    exit;
+}
+function toggleTask($folderIndex, $taskIndex) {
+
+    if (!file_exists(TREKING_FILE)) {
+        echo json_encode(['success' => false, 'message' => 'File not found']);
+        exit;
+    }
+
+    $json = json_decode(file_get_contents(TREKING_FILE), true);
+
+    if (!isset($json['FOLDER'][$folderIndex]['tasks'][$taskIndex])) {
+        echo json_encode(['success' => false, 'message' => 'Task not found']);
+        exit;
+    }
+
+    $json['FOLDER'][$folderIndex]['tasks'][$taskIndex]['status'] =
+        !$json['FOLDER'][$folderIndex]['tasks'][$taskIndex]['status'];
+
+    file_put_contents(
+        TREKING_FILE,
+        json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+    );
+
+    echo json_encode(['success' => true, 'message' => 'Task toggled']);
+    exit;
+}
+function renameTask($folderIndex, $taskIndex, $newName) {
+    
+    if (!file_exists(TREKING_FILE)) {
+        echo json_encode(['success' => false, 'message' => 'File not found']);
+        exit;
+    }
+    $json = json_decode(file_get_contents(TREKING_FILE), true);
+    
+    $json['FOLDER'][$folderIndex]['tasks'][$taskIndex]['Name'] = $newName;
+
+file_put_contents(
+        TREKING_FILE,
+        json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+    );
+
+    echo json_encode(['success' => true, 'message' => 'Task toggled']);
+    exit;
+}
+// Обработка запроса
+if (isset($_GET['method']) && $_GET['method'] === 'addTask') {
+    $folderIndex = $_GET['folderIndex'] ?? 0;
+    $taskText = $_GET['taskText'] ?? '';
+
+    $result = addTask($folderIndex, $taskText);
+    
+    echo json_encode($result);
+    exit;
+}
+if (isset($_GET['method']) && $_GET['method'] === 'deleteTask') {
+    $folderIndex = $_GET['folderIndex'] ?? 0;
+    $taskIndex = $_GET['taskIndex'] ?? 0;
+
+    $result = deleteTask($folderIndex, $taskIndex);
+
+    echo json_encode($result);
+    exit;
+}
+if (isset($_GET['method']) && $_GET['method'] === 'toggleTask') {
+    $folderIndex = $_GET['folderIndex'] ?? 0;
+    $taskIndex = $_GET['taskIndex'] ?? 0;
+
+    $result = toggleTask($folderIndex, $taskIndex);
+
+    echo json_encode($result);
+    exit;
+}
+if (isset($_GET['method']) && $_GET['method'] === 'renameTask') {
+    $folderIndex = $_GET['folderIndex'] ?? 0;
+    $taskIndex = $_GET['taskIndex'] ?? 0;
+    $taskText = $_GET['taskText'] ?? 0;
+
+    $result = renameTask($folderIndex, $taskIndex, $taskText);
+
+    echo json_encode($result);
+    exit;
+}

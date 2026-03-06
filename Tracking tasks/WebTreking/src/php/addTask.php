@@ -51,8 +51,7 @@ $newTask = [
 $json['FOLDER'][$folderIndex]['tasks'][] = $newTask;
 
 file_put_contents(
-    $file,
-    json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-);
-
+        $file,
+        json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+    );
 echo json_encode(['success' => true]);
