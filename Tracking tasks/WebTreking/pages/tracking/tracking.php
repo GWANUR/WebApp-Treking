@@ -35,9 +35,6 @@ $theme = getSettings('theme') ?? 'dark';
             <div id="tasks_container">
                 <div class="tasks_items">
                 </div>
-            <div class="task-window-footer">
-                <button class="addTask" onclick="addTask(<?= htmlspecialchars($folderIndex - 1)?>)"><i class="bi bi-plus-circle-fill"></i></button>
-            </div>
             </div>
             <div class="stat_tasks">
                 <div class="around_graph_container">
@@ -53,9 +50,13 @@ $theme = getSettings('theme') ?? 'dark';
                 </div>
             </div>
         </div>
+            <div class="task-window-footer">
+                <button class="addTask" onclick="addTask(<?= htmlspecialchars($folderIndex - 1)?>)"><i class="bi bi-plus-circle-fill"></i></button>
+            </div>
     </main>
 </body>
 <script src="tracking.js"></script>
+<script src="../../src/components/castomAlert/castomAlert.js"></script>
 <script>
     loadTasks((<?= htmlspecialchars($folderIndex)?> - 1));
 </script>

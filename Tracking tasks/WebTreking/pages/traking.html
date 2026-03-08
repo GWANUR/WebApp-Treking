@@ -8,8 +8,13 @@
         <h1>Tasks</h1>
         <div class="treking__warp">
             <div class="header-treking">
-                <button><i class="bi bi-trash"></i></button>
-                <button onclick="loadTrekingData()"><i class="bi bi-arrow-clockwise"></i></button>
+                <div class="search_folder">
+                    <input type="text" class="searchFolder" placeholder="Serach folder...">
+                </div>
+                <div class="actions">
+                    <button onclick="loadTrekingData()"><i class="bi bi-arrow-clockwise"></i></button>
+                    <button onclick="deleteAllFolder()"><i class="bi bi-trash"></i></button>
+                </div>
             </div>
             <table class="container_folder_treking">
                 

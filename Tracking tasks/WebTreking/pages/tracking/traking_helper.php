@@ -15,7 +15,7 @@ function getFolderName($folderIndex) {
         return null;
     }
 
-    return $json['FOLDER'][$index]['Name'] ?? "Unknown Folder";
+    return $json['FOLDER'][$index]['name'] ?? "Unknown Folder";
 }
 
 function getSettings($key) {
@@ -72,14 +72,14 @@ function addTask($folderIndex, $taskName) {
     }
 
     foreach ($json['FOLDER'][$folderIndex]['tasks'] as $task) {
-        if ($task['Name'] === $taskName) {
+        if ($task['name'] === $taskName) {
             echo json_encode(['success' => false, 'message' => 'Task already exists']);
             exit;
         }
     }
 
     $json['FOLDER'][$folderIndex]['tasks'][] = [
-        'Name' => $taskName,
+        'name' => $taskName,
         'status' => false
     ];
 
@@ -127,7 +127,7 @@ function renameTask($folderIndex, $taskIndex, $newName) {
     }
     $json = json_decode(file_get_contents(TREKING_FILE), true);
     
-    $json['FOLDER'][$folderIndex]['tasks'][$taskIndex]['Name'] = $newName;
+    $json['FOLDER'][$folderIndex]['tasks'][$taskIndex]['name'] = $newName;
 
 file_put_contents(
         TREKING_FILE,

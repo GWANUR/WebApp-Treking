@@ -177,7 +177,7 @@ function loadTasks(folderId) {
                 }
                 
                 tasks.forEach((task, index) => {
-                    addTaskElement(index, task.Name, task.status, folderId);
+                    addTaskElement(index, task.name, task.status, folderId);
                 });
                 calculatingGraph();
 
@@ -536,6 +536,35 @@ function makeDraggable(classItem) {
         header.style.cursor = 'grab';
     });
 }
+const reminders = {};
+function reminder(taskId, folderId) {
+    if (taskId === undefined || folderId === undefined) {
+        console.error('Not found taskId or folderId');
+        return;
+    }
+
+    const Task = document.querySelector(`.task_item[data-task-index="${taskId}"]`);
+    const taskText = Task.querySelector('.task_name').textContent;
+
+    const reminderWindow = document.createElement('div');
+    reminderWindow.className = 'reminder';
+    reminderWindow.id = `reminder_${taskId}`;
+    reminderWindow.innerHTML = `
+        <div class="reminder_header">
+            <span class='title'>Reminder</span>
+            <button onclick="closeReminder(${taskId})"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="reminder_container">
+            <div class="reminder_text">${taskText}</div>
+            <div class="reminder_active">
+                <input type="datetime-local" placeholder="Enter time" />
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(reminderWindow);
+}
+
 
 document.addEventListener('DOMContentLoaded', function () {
 

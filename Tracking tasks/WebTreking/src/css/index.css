@@ -157,9 +157,10 @@ nav.treking-nav {
 .header-treking {
     background: var(--body-text);
     display: flex;
-    flex-direction: row-reverse;
-    padding: 0 30px;
-    gap: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 5px 30px;
+    align-items: center;
 }
 .header-treking button{
     color: var(--body-background);
@@ -258,4 +259,13 @@ button.toggleTask i {
 .task-window-header i {
     font-size: 18px;
     line-height: 0em;
+}
+div#custom_alert {
+    position: absolute;
+    background: var(--akcent);
+}
+input.searchFolder {
+    color: var(--header-background);
+    font-size: 18px;
+    border: 2px solid var(--header-background);
 }

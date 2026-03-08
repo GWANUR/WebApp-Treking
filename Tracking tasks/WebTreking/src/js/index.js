@@ -15,6 +15,7 @@ function loadPage(page) {
             // Если это страница traking — загружаем JSON
             if (page === "traking") {
                 loadTrekingData();
+                searchFolder();
             }
 
             // Обновляем класс active у кнопок меню
@@ -73,11 +74,11 @@ function makeDraggable(windowId) {
     });
 }
 
-function saveNewFolderName(folderElement) {
+function saveNewFoldername(folderElement) {
     const input = folderElement.querySelector('input.folder_name');
-    const newName = input.value.trim();
+    const newname = input.value.trim();
 
-    if (!newName) {
+    if (!newname) {
         alert('The folder name cannot be empty!');
         return;
     }
@@ -87,13 +88,13 @@ function saveNewFolderName(folderElement) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name: newName })
+        body: JSON.stringify({ name: newname })
     })
     .then(res => res.json())
     .then(data => {
         if (data.success) {
             // Успешно: обновляем название в DOM
-            folderElement.querySelector('.folder_name').textContent = newName;
+            folderElement.querySelector('.folder_name').textContent = newname;
             loadTrekingData();
         } else {
             // ❌ Ошибка от сервера — выводим пользователю
@@ -116,7 +117,7 @@ function addFolder() {
     newFolder.classList.add('folder');
     newFolder.innerHTML = `
         <input type="text" class="folder_name" placeholder="Add a new folder..." value="New folder"> 
-        <button onclick="event.stopPropagation(); saveNewFolderName(this.parentElement)">Save</button>
+        <button onclick="event.stopPropagation(); saveNewFoldername(this.parentElement)">Save</button>
         <button onclick="event.stopPropagation(); loadTrekingData()">Undo</button>
     `;
     treking.appendChild(newFolder);
@@ -136,7 +137,19 @@ function loadData() {
         .catch(error => console.error('Ошибка:', error));
 }
 
-function loadTrekingData() {
+function searchFolder() {
+    const inputFolderSerach = document.querySelector('.header-treking input.searchFolder');
+
+    inputFolderSerach.addEventListener('input', (e) => {
+        if (e.target.value.trim() === '') {
+            loadTrekingData(); 
+        } else {
+            loadTrekingData(e.target.value.trim()); 
+        }
+    });
+}
+
+function loadTrekingData(foldername) {
     fetch('src/data/treking.JSON')
         .then(response => {
             if (!response.ok) {
@@ -152,61 +165,111 @@ function loadTrekingData() {
                 container.innerHTML = '<p class="folderNotFound">No folders found.</p>';
                 return;
             }
-            folders.forEach((folder, index) => {
-                const name = folder.Name;
-                const tasks = folder.tasks || {};
-                const taskArray = Array.isArray(tasks) ? tasks : Object.values(tasks);
+            if (!foldername){
+                folders.forEach((folder, index) => {
+                    const name = folder.name;
+                    const tasks = folder.tasks || {};
+                    const taskArray = Array.isArray(tasks) ? tasks : Object.values(tasks);
 
-                const totalTasks = taskArray.length;
-                const readyTasks = taskArray.filter(task => task.status).length;
+                    const totalTasks = taskArray.length;
+                    const readyTasks = taskArray.filter(task => task.status).length;
 
-                container.innerHTML += `
-                    <tr onclick="loadWindowTasks(${index + 1})" class="folder" id="folder-${index + 1}">
-                        <th class="left">
-                            <span class="folder_name">${name}</span>
-                        </th>
-                        <th class="info_folder">
-                            <span class="tasks_count">Tasks: ${totalTasks}</span>
-                            <span class="tasks_ready">Ready: ${readyTasks}</span>
-                        </th>
-                        <th class="active">
-                            <button class="rename" onclick="event.stopPropagation(); renameFolder(${index + 1})">
-                                <i class="bi bi-pencil"></i> Rename
-                            </button>
-                            <button class="remove" onclick="event.stopPropagation(); removeFolder(${index + 1})">
-                                <i class="bi bi-trash3"></i> Remove
-                            </button>
-                        </th>
-                    </tr>
-                `;
-            });
-        })
-        .catch(error => console.error('Ошибка:', error));
-}
+                    container.innerHTML += `
+                        <tr onclick="loadWindowTasks(${index + 1})" class="folder" id="folder-${index + 1}">
+                            <th class="left">
+                                <span class="folder_name">${name}</span>
+                            </th>
+                            <th class="info_folder">
+                                <span class="tasks_count">Tasks: ${totalTasks}</span>
+                                <span class="tasks_ready">Ready: ${readyTasks}</span>
+                            </th>
+                            <th class="active">
+                                <button class="rename" onclick="event.stopPropagation(); renameFolder(${index + 1})">
+                                    <i class="bi bi-pencil"></i> Rename
+                                </button>
+                                <button class="remove" onclick="event.stopPropagation(); removeFolder(${index + 1},'${name}')">
+                                    <i class="bi bi-trash3"></i> Remove
+                                </button>
+                            </th>
+                        </tr>
+                    `;
+                });
+            } else {
+                folders.forEach((folder, index) => {
+                    const name = folder.name;
+                    const tasks = folder.tasks || {};
+                    const taskArray = Array.isArray(tasks) ? tasks : Object.values(tasks);
 
-function removeFolder(index) {
-    fetch('src/php/remove.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ index: index })
-    })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                loadTrekingData();
+                    const totalTasks = taskArray.length;
+                    const readyTasks = taskArray.filter(task => task.status).length;
+                    if (folder.name.toLowerCase().includes(foldername.toLowerCase())) {
+                        container.innerHTML += `
+                            <tr onclick="loadWindowTasks(${index + 1})" class="folder" id="folder-${index + 1}">
+                                <th class="left">
+                                    <span class="folder_name">${name}</span>
+                                </th>
+                                <th class="info_folder">
+                                    <span class="tasks_count">Tasks: ${totalTasks}</span>
+                                    <span class="tasks_ready">Ready: ${readyTasks}</span>
+                                </th>
+                                <th class="active">
+                                    <button class="rename" onclick="event.stopPropagation(); renameFolder(${index + 1})">
+                                        <i class="bi bi-pencil"></i> Rename
+                                    </button>
+                                    <button class="remove" onclick="event.stopPropagation(); removeFolder(${index + 1},'${name}')">
+                                        <i class="bi bi-trash3"></i> Remove
+                                    </button>
+                                </th>
+                            </tr>
+                        `;
+                    }
+                })
             }
         })
         .catch(error => console.error('Ошибка:', error));
 }
 
+function removeFolder(index, nameFolder) {
+
+    AlertComponent.show({
+        message: `Are you sure you want to delete "${nameFolder}" folder?`,
+        type: "choice",
+
+        onAccept: () => {
+
+            fetch('src/php/remove.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ index: index })
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.success) {
+                    loadTrekingData();
+                }
+
+            })
+            .catch(error => console.error('Ошибка:', error));
+
+        },
+
+        onCancel: () => {
+            console.log("Удаление отменено");
+        }
+
+    });
+
+}
+
 function renameFolder(index) {
     const folderElement = document.getElementById(`folder-${index}`);
     const nameElement = folderElement.querySelector('.folder_name');
-    const currentName = nameElement.textContent;
+    const currentname = nameElement.textContent;
     nameElement.innerHTML = `
-    <input type="text" class="folder_rename" placeholder="Rename folder..." value="${currentName}" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" onkeydown="event.stopPropagation()">
+    <input type="text" class="folder_rename" placeholder="Rename folder..." value="${currentname}" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" onkeydown="event.stopPropagation()">
     <button onclick="event.stopPropagation(); saveRenamedFolder(${index}, this.parentElement.querySelector('input').value)">Save</button>
     <button onclick="event.stopPropagation();loadTrekingData()">Undo</button>
     `;
@@ -215,8 +278,8 @@ function renameFolder(index) {
     input.select();
 }
 
-function saveRenamedFolder(index, newName) {
-    if (!newName.trim()) {
+function saveRenamedFolder(index, newname) {
+    if (!newname.trim()) {
         alert('The folder name cannot be empty!');
         return;
     }
@@ -225,7 +288,7 @@ function saveRenamedFolder(index, newName) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ index: index, newName: newName })
+        body: JSON.stringify({ index: index, newname: newname })
     })
         .then(res => res.json())
         .then(data => {
@@ -243,7 +306,7 @@ function loadWindowTasks(folderIndex) {
     if (document.getElementById(taskWindow.id)) return; 
     taskWindow.innerHTML = `
         <div class="task-window-header">
-            <span class="WindowFolderName"></span>
+            <span class="WindowFoldername"></span>
             <button onclick="event.stopPropagation(); closeWindow('${taskWindow.id}')"><i class="bi bi-x-circle"></i></button>
         </div>
         <div class="task-window-content"></div>
@@ -276,8 +339,8 @@ function addTask(folderIndex, windowId) {
     `;
     content.appendChild(newTask);
 }
-function saveNewTask(folderIndex, taskName) {
-    if (!taskName.trim()) {
+function saveNewTask(folderIndex, taskname) {
+    if (!taskname.trim()) {
         alert('The task name cannot be empty!');
         return;
     }
@@ -286,7 +349,7 @@ function saveNewTask(folderIndex, taskName) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ folderIndex: folderIndex-1, taskName: taskName })
+        body: JSON.stringify({ folderIndex: folderIndex-1, taskname: taskname })
     })
         .then(res => res.json())
         .then(data => {
@@ -317,17 +380,17 @@ function loadTasks(folderIndex) {
             }
 
             const content = document.querySelector(`#task-window-${folderIndex} .task-window-content`);
-            const folderNameEl = document.querySelector(`#task-window-${folderIndex} .WindowFolderName`);
-            folderNameEl.textContent = folder.Name;
+            const foldernameEl = document.querySelector(`#task-window-${folderIndex} .WindowFoldername`);
+            foldernameEl.textContent = folder.name;
             content.innerHTML = '';
 
             tasks.forEach((task, taskIndex) => {
-                const taskName = task.Name || `Task ${taskIndex + 1}`;
+                const taskname = task.name || `Task ${taskIndex + 1}`;
                 const status = task.status || false;
 
                 content.innerHTML += `
                     <div class="task-item">
-                        <span>${taskName}</span>
+                        <span>${taskname}</span>
                         <button class="toggleTask ${status ? 'ready' : 'notready'}"
                             onclick="toggleTaskStatus(${folderIndex}, ${taskIndex})">
                             ${status ? '<i class="bi bi-check-circle-fill"></i>' : '<i class="bi bi-circle"></i>'}
@@ -376,5 +439,4 @@ document.addEventListener("DOMContentLoaded", () => {
             button.classList.add("active");
         });
     });
-
 });

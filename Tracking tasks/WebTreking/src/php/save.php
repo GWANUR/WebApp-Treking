@@ -11,7 +11,7 @@ if (!isset($data['name']) || !trim($data['name'])) {
     exit;
 }
 
-$newName = trim($data['name']);
+$newname = trim($data['name']);
 
 // Путь к JSON файлу
 $file = __DIR__ . '/../data/treking.JSON';
@@ -20,16 +20,16 @@ $file = __DIR__ . '/../data/treking.JSON';
 $jsonData = json_decode(file_get_contents($file), true);
 
 // Проверяем уникальность имени
-$existingNames = array_map(fn($folder) => $folder['Name'], $jsonData['FOLDER'] ?? []);
+$existingnames = array_map(fn($folder) => $folder['name'], $jsonData['FOLDER'] ?? []);
 
-if (in_array($newName, $existingNames)) {
+if (in_array($newname, $existingnames)) {
     echo json_encode(['success' => false, 'error' => 'Folder name already exists']);
     exit;
 }
 
 // Добавляем новую папку
 $jsonData['FOLDER'][] = [
-    'Name' => $newName,
+    'name' => $newname,
     'date' => date('Y-m-d H:i:s'),
     'tasks' => []
 ];

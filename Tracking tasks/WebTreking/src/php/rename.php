@@ -6,9 +6,9 @@ $file = __DIR__ . '/../data/treking.JSON';
 $jsonData = json_decode(file_get_contents($file), true);
 
 $index = (int)$data['index'];
-$newName = trim($data['newName']);
+$newname = trim($data['newname']);
 
-$jsonData['FOLDER'][$index - 1]['Name'] = $newName;
+$jsonData['FOLDER'][$index - 1]['name'] = $newname;
 
 
 

@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $data = json_decode(file_get_contents('php://input'), true);
 
 $folderIndex = $data['folderIndex'] ?? null;
-$taskName = trim($data['taskName'] ?? '');
+$taskName = trim($data['taskname'] ?? '');
 
 if ($folderIndex === null || $taskName === '') {
     echo json_encode(['success' => false, 'message' => 'Invalid data']);
@@ -34,7 +34,7 @@ $tasks = $json['FOLDER'][$folderIndex]['tasks'] ?? [];
 
 # Проверка на дубликаты
 foreach ($tasks as $task) {
-    if (mb_strtolower(trim($task['Name'])) === mb_strtolower($taskName)) {
+    if (mb_strtolower(trim($task['name'])) === mb_strtolower($taskName)) {
         echo json_encode([
             'success' => false,
             'message' => 'Task with this name already exists'
@@ -44,7 +44,7 @@ foreach ($tasks as $task) {
 }
 
 $newTask = [
-    "Name" => $taskName,
+    "name" => $taskName,
     "status" => false
 ];
 
@@ -55,3 +55,5 @@ file_put_contents(
         json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
     );
 echo json_encode(['success' => true]);
+
+// Позвонить в 14:00 Виталию Игоревечу по поводу работы
