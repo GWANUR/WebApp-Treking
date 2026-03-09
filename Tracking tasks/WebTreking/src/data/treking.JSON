@@ -35,6 +35,30 @@
                 {
                     "name": "Добавить поисковик Задач",
                     "status": false
+                },
+                {
+                    "name": "Добавить возможность перетаскивать Folder и Task местами и обновлять их порядок в файле treking.JSON",
+                    "status": false
+                },
+                {
+                    "name": "Добавить все смайлы в EmojyKeyboard",
+                    "status": false
+                },
+                {
+                    "name": "Добавить отслеживание Enter => button.Save",
+                    "status": false
+                },
+                {
+                    "name": "Автообновление на странице Update",
+                    "status": false
+                },
+                {
+                    "name": "Написать документацию на Document",
+                    "status": false
+                },
+                {
+                    "name": "Сделать страницу Home которая подчеркнет нужные функции и полезность приложения",
+                    "status": false
                 }
             ]
         },
@@ -64,47 +88,47 @@
             "tasks": [
                 {
                     "name": "Помыть плиту",
-                    "status": false
+                    "status": true
                 },
                 {
                     "name": "Протереть пыль и грязь",
-                    "status": false
+                    "status": true
                 },
                 {
                     "name": "Протереть посудомойку",
-                    "status": false
+                    "status": true
                 },
                 {
                     "name": "Помыть посуду",
-                    "status": false
+                    "status": true
                 },
                 {
                     "name": "Красную накидку с кресла в стирку",
-                    "status": false
+                    "status": true
                 },
                 {
                     "name": "Протереть подоконник с двух сторон на кухне",
-                    "status": false
+                    "status": true
                 },
                 {
                     "name": "Почистить кофемашину и тостерницу",
-                    "status": false
+                    "status": true
                 },
                 {
                     "name": "Помыть коврики в ванной",
                     "status": false
                 },
                 {
-                    "name": "Помыть раковину(и  шкафчик), туалет и ванную",
-                    "status": false
+                    "name": "Помыть раковину(и  шкафчик), туалет",
+                    "status": true
                 },
                 {
-                    "name": "Протереть роутер, выключатель в коридоре, коврики",
-                    "status": false
+                    "name": "Протереть роутер, выключатель в коридоре",
+                    "status": true
                 },
                 {
                     "name": "Протереть пыль в зале (везде: проектор, шкаф,. столы, компы, подоконник)",
-                    "status": false
+                    "status": true
                 },
                 {
                     "name": "Застелить кровать (На сушилке)",
@@ -112,10 +136,30 @@
                 },
                 {
                     "name": "Убрать вещи с сушилки и в ногах у кровати",
-                    "status": false
+                    "status": true
                 },
                 {
                     "name": "Пропылесосить + помыть полы",
+                    "status": false
+                },
+                {
+                    "name": "Помыть ванную",
+                    "status": false
+                },
+                {
+                    "name": "Помыть ершик и полку",
+                    "status": false
+                },
+                {
+                    "name": "Помыть коврики в коридоре",
+                    "status": true
+                },
+                {
+                    "name": "Запустить темную стирку",
+                    "status": false
+                },
+                {
+                    "name": "Запустить светлую стирку",
                     "status": false
                 }
             ]

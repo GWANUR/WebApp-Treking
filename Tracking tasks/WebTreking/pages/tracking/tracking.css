@@ -389,3 +389,19 @@ input[type="datetime-local"] {
     border-radius: 10px;
     font-size: 18px;
 }
+::-webkit-scrollbar {
+    background: var(--header-background);
+    border-radius: 10px;
+    border: 1px solid;
+    padding: 5px 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--body-text);
+    border-radius: 10px;
+    margin: 5px 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--body-text);
+    border-radius: 10px;
+    margin: 5px 10px;
+}
