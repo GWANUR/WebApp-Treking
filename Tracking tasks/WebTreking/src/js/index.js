@@ -426,7 +426,81 @@ function closeWindow(windowId) {
     }
 }
 
+function openAllReminder(type){
+    const remindWinEl = document.querySelector('#reminder_container')
+    const listRem = remindWinEl.querySelector('.reminder_window')
+    const buttonRem = remindWinEl.querySelector('.reminder_button')
+
+    if (type === 'load'){
+        listRem.innerHTML = '';
+        fetch(`src/data/treking.JSON`)
+        .then(response => response.json())
+        .then(data => {
+
+            data.FOLDER.forEach((folder, folderIndex) => {
+                folder.tasks.forEach((task, taskIndex) => {
+
+                    if (task.data && task.time){
+                        const taskRemEL = document.createElement('div')
+                        taskRemEL.className = `reminder_item`
+                        taskRemEL.id = `reminder_item_${folderIndex}_${taskIndex}`
+
+                        taskRemEL.innerHTML = `
+                            <div class="reminder_item_info">
+                                <span class="name">${task.name}</span>
+                                <div class="date_remind">
+                                    <span class="date">${task.data}</span>
+                                    <span class="time">${task.time}</span> 
+                                </div>
+                                <div class="remButton">
+                                    <button class="remButtonEl" onclick="removeReminder(${folderIndex}, ${taskIndex})">
+                                        <i class="bi bi-bell-slash-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+
+                        taskRemEL.onclick = function () {
+                            const url = `/pages/tracking/tracking.php?folderIndex=${folderIndex+1}#task_${taskIndex}`;
+                            window.open(url, '_blank');
+                        }
+                        listRem.appendChild(taskRemEL)
+                    }
+                })
+            })
+        })
+    }
+    if (type === 'open'){
+        listRem.style.left = 'auto';
+        listRem.style.right = '0%';
+
+        buttonRem.querySelector('.all_reminder').remove();
+        const newBatton = document.createElement('button');
+        newBatton.className = "all_reminder_close";
+        newBatton.innerHTML = `<i class="bi bi-bell"></i>`
+        newBatton.onclick = function(){
+            openAllReminder('close')
+        }
+        buttonRem.appendChild(newBatton)
+    }
+    if (type === 'close'){
+        listRem.style.right = 'auto';
+        listRem.style.left = '100%';
+
+        buttonRem.querySelector('.all_reminder_close').remove();
+        const newBatton = document.createElement('button');
+        newBatton.className = "all_reminder";
+        newBatton.innerHTML = `<i class="bi bi-bell-fill"></i>`
+        newBatton.onclick = function(){
+            openAllReminder('open')
+        }
+        buttonRem.appendChild(newBatton)
+    }
+
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+    openAllReminder('load')
 
     const lastPage = localStorage.getItem('activePage') || 'home';
     loadPage(lastPage);
@@ -439,4 +513,5 @@ document.addEventListener("DOMContentLoaded", () => {
             button.classList.add("active");
         });
     });
+
 });

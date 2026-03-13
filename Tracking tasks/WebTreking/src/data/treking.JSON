@@ -5,60 +5,102 @@
             "date": "2026-03-05 11:43:51",
             "tasks": [
                 {
-                    "name": "Доработать функционал страницы Tracking 🌟",
-                    "status": false
-                },
-                {
                     "name": "Сделать персональную настройку темы \"Settings\"",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "🥳Добавить функцию \"Напоминание\"",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "🙌Добавить функцию \"Таймер\"",
-                    "status": true
+                    "status": true,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "👏 Добавить мобильную адаптацию",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "🎉Добавить отчет времени",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "Добавить поисковик папок",
-                    "status": true
+                    "status": true,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "Добавить поисковик Задач",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "Добавить возможность перетаскивать Folder и Task местами и обновлять их порядок в файле treking.JSON",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "Добавить все смайлы в EmojyKeyboard",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "Добавить отслеживание Enter => button.Save",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "Автообновление на странице Update",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "Написать документацию на Document",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 },
                 {
                     "name": "Сделать страницу Home которая подчеркнет нужные функции и полезность приложения",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
+                },
+                {
+                    "name": "Переместить данные из REMINDER в Folder, что бы это все хранилось в одном месте",
+                    "status": true,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 }
             ]
         },
@@ -68,114 +110,39 @@
             "tasks": [
                 {
                     "name": "Если я не успеваю/не могу сделать юлькины просьбы за неделю, то по ее просьбюе без выебонов иду и начинаю это все делать",
-                    "status": false
+                    "status": false,
+                    "data": false,
+                    "time": false,
+                    "sound": false
                 }
             ]
         },
         {
-            "name": "Дела на 10.03",
-            "date": "2026-03-08 09:35:13",
-            "tasks": [
-                {
-                    "name": "Позвонить в 14:00 Виталию Игоревечу по поводу работы",
-                    "status": false
-                }
-            ]
+            "name": "Создание своей первой AI",
+            "date": "2026-03-11 18:17:03",
+            "tasks": []
         },
         {
-            "name": "Уборка 08.03",
-            "date": "2026-03-08 14:20:29",
+            "name": "Дела",
+            "date": "2026-03-13 09:48:08",
             "tasks": [
                 {
-                    "name": "Помыть плиту",
-                    "status": true
+                    "name": "Позвонить Дяде Леше",
+                    "status": false,
+                    "data": "13.03.2026",
+                    "time": "18:00",
+                    "sound": true
                 },
                 {
-                    "name": "Протереть пыль и грязь",
-                    "status": true
-                },
-                {
-                    "name": "Протереть посудомойку",
-                    "status": true
-                },
-                {
-                    "name": "Помыть посуду",
-                    "status": true
-                },
-                {
-                    "name": "Красную накидку с кресла в стирку",
-                    "status": true
-                },
-                {
-                    "name": "Протереть подоконник с двух сторон на кухне",
-                    "status": true
-                },
-                {
-                    "name": "Почистить кофемашину и тостерницу",
-                    "status": true
-                },
-                {
-                    "name": "Помыть коврики в ванной",
-                    "status": false
-                },
-                {
-                    "name": "Помыть раковину(и  шкафчик), туалет",
-                    "status": true
-                },
-                {
-                    "name": "Протереть роутер, выключатель в коридоре",
-                    "status": true
-                },
-                {
-                    "name": "Протереть пыль в зале (везде: проектор, шкаф,. столы, компы, подоконник)",
-                    "status": true
-                },
-                {
-                    "name": "Застелить кровать (На сушилке)",
-                    "status": false
-                },
-                {
-                    "name": "Убрать вещи с сушилки и в ногах у кровати",
-                    "status": true
-                },
-                {
-                    "name": "Пропылесосить + помыть полы",
-                    "status": false
-                },
-                {
-                    "name": "Помыть ванную",
-                    "status": false
-                },
-                {
-                    "name": "Помыть ершик и полку",
-                    "status": false
-                },
-                {
-                    "name": "Помыть коврики в коридоре",
-                    "status": true
-                },
-                {
-                    "name": "Запустить темную стирку",
-                    "status": false
-                },
-                {
-                    "name": "Запустить светлую стирку",
-                    "status": false
+                    "name": "Сделать тестовое задание FMF SEO Junior",
+                    "status": false,
+                    "data": "13.03.2026",
+                    "time": "21:00",
+                    "sound": true
                 }
             ]
         }
     ],
-    "REMINDER": {
-        "Id": 0,
-        "reminderInfo": [
-            {
-                "folderId": "0",
-                "taskId": "0",
-                "data": "10.03.2026",
-                "time": "14:00"
-            }
-        ]
-    },
     "SETTINGS": {
         "theme": "dark",
         "user-theme": [

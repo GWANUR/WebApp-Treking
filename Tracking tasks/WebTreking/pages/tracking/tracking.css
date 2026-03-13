@@ -115,6 +115,7 @@ input[type="text"]::placeholder {
     grid-template-rows: 1fr;
     grid-template-columns: 2fr 1fr 0.1fr;
     user-select: none;
+    transition: .3s;
 }
 main .container {
     width: 1340px;
@@ -399,9 +400,82 @@ input[type="datetime-local"] {
     background: var(--body-text);
     border-radius: 10px;
     margin: 5px 10px;
+    transition: .3s;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--body-text);
+    background: #d0f4a9;
     border-radius: 10px;
     margin: 5px 10px;
+    transition: .3s;
+}
+.reminder{
+    user-select: none;
+}
+button.all_reminder, button.all_reminder_close {
+    font-size: 2em;
+    background: var(--body-text);
+    color: var(--body-background);
+    border-radius: 100%;
+    padding: 0.2em 0.3em;
+}
+div#reminder_container {
+    position: fixed;
+    right: 0;
+    top: 6em;
+}
+.reminder_button {
+    padding-right: 1em;
+}
+.reminder_window {
+    position: absolute;
+    width: 32em;
+    left: 110%;
+    top: 4em;
+    min-width: 300px;
+    border: 1px solid;
+    border-right: none;
+    background: var(--akcent);
+    padding: 20px 25px;
+    height: 50vh;
+    min-height: 300px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    box-shadow: black 0 0 20px 1px;
+}
+.reminder_item_info {
+    display: grid;
+    grid-template-columns: 2fr 1fr 0.1fr;
+    justify-items: center;
+    align-items: center;
+    padding: 15px 20px;
+    gap: 20px;
+    transition: .3s;
+    cursor: pointer;
+    border-radius: 20px;
+    border: 1px solid transparent;
+}
+.reminder_item_info:hover{
+    background: var(--body-background);
+    border: 1px solid;
+    transition: .3s;
+}
+.date_remind {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+}
+.reminder_item_info span.name {
+    text-align: center;
+}
+button.remButtonEl {
+    font-size: 1.2em;
+}
+
+.see{
+    filter: brightness(1.5) contrast(1.0);
+    transition: .3s;
 }

@@ -15,6 +15,7 @@ const AlertComponent = (() => {
 
     function closeAlert(){
         const overlay = document.querySelector("#alert_overlay");
+        
         if(overlay) overlay.remove();
 
         active = false;
@@ -39,7 +40,9 @@ const AlertComponent = (() => {
             message = "Alert",
             type = "info",
             onAccept = null,
-            onCancel = null
+            onCancel = null,
+            onClose = null,
+            data = null
         } = config;
 
         const overlay = document.createElement("div");
@@ -52,13 +55,31 @@ const AlertComponent = (() => {
                 <button class="alert-yes"><i class="bi bi-check-circle"></i> Yes</button>
                 <button class="alert-no"><i class="bi bi-x-circle"></i> No</button>
             `;
-        }else{
-            buttons = `<button class="alert-ok"><i class="bi bi-exclamation-triangle"></i> Ok</button>`;
+            ico = ``;
+        }
+        if(type === "error"){
+            buttons = `<button class="alert-ok"><i class="bi bi-check-circle"></i> Ok</button>`;
+            ico = `<i class="bi bi-bug"></i>`;
+        }
+        if(type === "warning"){
+            buttons = `<button class="alert-ok"><i class="bi bi-check-circle"></i> Ok</button>`;
+            ico = `<i class="bi bi-exclamation-triangle"></i>`;
+        }
+        if(type === "info"){
+            buttons = `<button class="alert-ok"><i class="bi bi-check-circle"></i> Ok</button>`;
+            ico = `<i class="bi bi-info-circle"></i>`;
+        }
+        if(type === "reminder"){
+            buttons = `
+                <button class="alert-ok" onclick="acceptReminder(${data})"><i class="bi bi-calendar-check"></i> Ok</button>
+                <button class="alert-no"><i class="bi bi-clock-history"></i> Remind me later</button>
+            `;
+            ico = `<i class="bi bi-bell-fill"></i>`;
         }
 
         overlay.innerHTML = `
             <div class="alert-box">
-                <span class="alert-title">${message}</span>
+                <span class="alert-title">${ico} ${message}</span>
                 <div class="alert-actions">
                     ${buttons}
                 </div>
@@ -72,7 +93,10 @@ const AlertComponent = (() => {
         const no = overlay.querySelector(".alert-no");
 
         if(ok){
-            ok.onclick = closeAlert;
+            ok.onclick = () => {
+                if(onClose) onClose();
+                closeAlert();
+            };
         }
 
         if(yes){
@@ -91,6 +115,7 @@ const AlertComponent = (() => {
 
         overlay.onclick = (e)=>{
             if(e.target === overlay){
+                if(onClose) onClose();
                 closeAlert();
             }
         };
@@ -99,6 +124,7 @@ const AlertComponent = (() => {
 
         function escHandler(e){
             if(e.key === "Escape"){
+                if(onClose) onClose();
                 closeAlert();
                 document.removeEventListener("keydown", escHandler);
             }

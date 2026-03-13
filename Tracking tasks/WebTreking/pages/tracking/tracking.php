@@ -54,6 +54,17 @@ $theme = getSettings('theme') ?? 'dark';
                 <button class="addTask" onclick="addTask(<?= htmlspecialchars($folderIndex - 1)?>)"><i class="bi bi-plus-circle-fill"></i></button>
             </div>
     </main>
+    <div id="reminder_container">
+        <div class="reminder_button">
+            <button onclick="openAllReminder('open')" class="all_reminder">
+                <i class="bi bi-bell-fill"></i>
+            </button>
+        </div>
+        <div class="reminder_window">
+            
+        </div>
+
+    </div>
 </body>
 <script src="tracking.js"></script>
 <script src="../../src/components/castomAlert/castomAlert.js"></script>

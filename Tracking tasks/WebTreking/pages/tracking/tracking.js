@@ -175,11 +175,12 @@ function loadTasks(folderId) {
                     `;
                     return;
                 }
-                
                 tasks.forEach((task, index) => {
-                    addTaskElement(index, task.name, task.status, folderId);
+                    addTaskElement(index, task.name, task.status, task.data, folderId );
                 });
+                loadReminders();
                 calculatingGraph();
+                setTimeout(scrollToTaskFromHash, 300);
 
             } else {
 
@@ -191,34 +192,57 @@ function loadTasks(folderId) {
         .catch(err => console.error('JSON error:', err));
 }
 
-function addTaskElement(taskId, taskText, isReady, folderId) {
+function addTaskElement(taskId, taskText, isReady, taskReminder, folderId) {
 
     const taskContainer = document.querySelector('#tasks_container .tasks_items');
 
     const taskElement = document.createElement('div');
     taskElement.classList.add('task_item');
+    taskElement.id = `task_${taskId}`,
 
     taskElement.setAttribute('data-task-index', taskId);
     taskElement.setAttribute('data-task-ready', isReady);
 
     taskElement.innerHTML = `
-            <span class="task_name">${taskText}</span>
-            <div class="active_task">
-                <button onClick="renameTask(${taskId}, ${folderId})" class="task_rename" data-task-index="${taskId}">
-                    <i class="bi bi-pencil"></i>
-                </button>
-                <button onclick="deleteTask(${taskId}, ${folderId})" class="task_delete" data-task-index="${taskId}">
-                    <i class="bi bi-trash"></i>
-                </button>
-                <button onclick="reminder(${taskId}, ${folderId})">
-                    <i class="bi bi-bell-fill"></i>
-                </button>
-            </div>
-            <button onclick="toggleTask(${taskId}, ${folderId})" class="task_toggle" data-task-index="${taskId}">
-                ${isReady ? '<i class="bi bi-check-circle-fill"></i>' : '<i class="bi bi-circle"></i>'}
-            </button>
+        <span class="task_name">${taskText}</span>
+        <div class="active_task"></div>
+        <button onclick="toggleTask(${taskId}, ${folderId})" class="task_toggle" data-task-index="${taskId}">
+            ${isReady ? '<i class="bi bi-check-circle-fill"></i>' : '<i class="bi bi-circle"></i>'}
+        </button>
     `;
+
+    const activeTask = taskElement.querySelector('.active_task');
+
+    const renameBtn = document.createElement('button');
+    renameBtn.className = 'task_rename';
+    renameBtn.innerHTML = `<i class="bi bi-pencil"></i>`;
+    renameBtn.onclick = () => renameTask(taskId, folderId);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'task_delete';
+    deleteBtn.innerHTML = `<i class="bi bi-trash"></i>`;
+    deleteBtn.onclick = () => deleteTask(taskId, folderId);
+
+    const reminderBtn = document.createElement('button');
+
+    if (taskReminder) {
+        reminderBtn.className = 'task_removeReminder';
+        reminderBtn.innerHTML = `<i class='bi bi-bell-slash-fill'></i>`;
+        reminderBtn.onclick = () => removeRemind(folderId, taskId);
+    } else {
+        reminderBtn.className = 'task_reminder';
+        reminderBtn.innerHTML = `<i class="bi bi-bell-fill"></i>`;
+        reminderBtn.onclick = () => reminder(taskId, folderId);
+    }
+
+    activeTask.appendChild(renameBtn);
+    activeTask.appendChild(deleteBtn);
+    activeTask.appendChild(reminderBtn);
+
     taskContainer.appendChild(taskElement);
+}
+function loadReminders(){
+
 }
 function renameTask(taskId, folderId){
 
@@ -495,9 +519,12 @@ function closeTimeReport(id) {
     }
 }
 
-function makeDraggable(classItem) {
-    const windowEl = document.getElementById(`${classItem}_${idTimer}`);
-    const header = windowEl.querySelector(`.${classItem}_header`);
+function makeDraggable(name) {
+    const classArrey = name.trim().split(' ');
+    const windowEl = document.querySelector(`#${classArrey[1]}`);
+    const header = windowEl.querySelector(`.${classArrey[0]}_header`);
+
+    if (!windowEl || !header) return;
 
     let offsetX = 0, offsetY = 0, isDragging = false;
 
@@ -508,7 +535,6 @@ function makeDraggable(classItem) {
         offsetX = e.clientX - rect.left;
         offsetY = e.clientY - rect.top;
 
-        document.querySelectorAll(`.${classItem}`).forEach(win => win.style.zIndex = 999); 
         windowEl.style.zIndex = 1000;
         header.style.cursor = 'grabbing';
     });
@@ -522,10 +548,8 @@ function makeDraggable(classItem) {
         const maxX = window.innerWidth - windowEl.offsetWidth;
         const maxY = window.innerHeight - windowEl.offsetHeight;
 
-        if (x < 0) x = 0;
-        if (y < 0) y = 0;
-        if (x > maxX) x = maxX;
-        if (y > maxY) y = maxY;
+        x = Math.max(0, Math.min(x, maxX));
+        y = Math.max(0, Math.min(y, maxY));
 
         windowEl.style.left = x + 'px';
         windowEl.style.top = y + 'px';
@@ -536,6 +560,7 @@ function makeDraggable(classItem) {
         header.style.cursor = 'grab';
     });
 }
+
 const reminders = {};
 function reminder(taskId, folderId) {
     if (taskId === undefined || folderId === undefined) {
@@ -547,7 +572,7 @@ function reminder(taskId, folderId) {
     const taskText = Task.querySelector('.task_name').textContent;
 
     const reminderWindow = document.createElement('div');
-    reminderWindow.className = 'reminder';
+    reminderWindow.className = `reminder reminder_${taskId}`;
     reminderWindow.id = `reminder_${taskId}`;
     reminderWindow.innerHTML = `
         <div class="reminder_header">
@@ -559,15 +584,304 @@ function reminder(taskId, folderId) {
             <div class="reminder_active">
                 <input type="datetime-local" placeholder="Enter time" />
             </div>
+            <div class="reminder_button">
+            </div>
         </div>
     `;
-
+    if ((document.querySelector(`#reminder_${taskId}`))){
+        return;
+    }
     document.body.appendChild(reminderWindow);
+    makeDraggable(`${reminderWindow.className}`);
+    const reminder_button = document.querySelector(`#${reminderWindow.id} .reminder_button`)
+
+    const remind = document.createElement('button')
+    remind.className = "remind"
+    remind.textContent = "Remind me"
+    remind.onclick = function () {
+        addRemind(`#reminder_${taskId}`, folderId, taskId)
+    }
+
+    reminder_button.appendChild(remind);
+
+    const remind_close = document.createElement('button')
+    remind_close.className = "remind_close"
+    remind_close.textContent = "Close"
+    remind_close.onclick = function () {
+        document.getElementById(reminderWindow.id).remove();
+    }
+
+    reminder_button.appendChild(remind_close);
+
+}
+function addRemind(idReminder, folderId, taskId){
+
+    const value = document.querySelector(`${idReminder} .reminder_active input`).value.trim();
+
+    if (!value){
+        AlertComponent.show({
+            message: `<i class="bi bi-exclamation-triangle"></i> The date value cannot be zero.`,
+            type: "info",
+        });
+        return;
+    }
+
+    const [datePart, timePart] = value.split('T');
+    const [year, month, day] = datePart.split('-');
+
+    const reminder = {
+        folderId: folderId.toString(),
+        taskId: taskId.toString(),
+        data: `${day}.${month}.${year}`,
+        time: timePart
+    };
+
+    fetch(`traking_helper.php?method=addTaskReminder`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reminder)
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.success) {
+            AlertComponent.show({
+                message: `Reminder added successfully.`,
+                type: "info"
+            });
+            const windowEl = document.querySelector(`${idReminder}`);
+            windowEl.remove();
+            const taskEl = document.querySelector(`.task_item[data-task-index="${taskId}"]`);
+            const newButton = document.createElement('button');
+            newButton.innerHTML = `
+                <i class="bi bi-bell-slash-fill"></i>
+            `;
+            newButton.className = "task_removeReminder";
+            newButton.onclick = function () {removeRemind(folderId, taskId)}
+            taskEl.querySelector('.task_reminder').remove();
+            taskEl.querySelector('.active_task').appendChild(newButton);
+            openAllReminder('load')
+        } else {
+            AlertComponent.show({
+                message: data.message || "Error adding reminder",
+                type: "error"
+            });
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+function closeReminder(id){
+    var window = document.querySelector(`#reminder_${id}`);
+    window.remove();
+}
+function removeRemind(folderId, taskId){
+
+}
+
+let reminderSound = null;
+
+function startSoundReminder(){
+    if(!reminderSound){
+        reminderSound = new Audio('/src/sound/reminder.mp3');
+        reminderSound.loop = true;
+    }
+    reminderSound.currentTime = 0;
+    reminderSound.play().catch(()=>{});
+}
+
+function stopSoundReminder(){
+    if(reminderSound){
+        reminderSound.pause();
+        reminderSound.currentTime = 0;
+    }
+}
+
+function checkReminders() {
+
+    fetch(`/src/data/treking.JSON`)
+    .then(response => response.json())
+    .then(data => {
+
+        const now = new Date();
+
+        data.FOLDER.forEach((folder, folderIndex) => {
+            folder.tasks.forEach((task, taskIndex) => {
+
+                if (!task.data || !task.time) return;
+
+                const [day, month, year] = task.data.split('.').map(Number);
+                const [hour, minute] = task.time.split(':').map(Number);
+
+                const taskDate = new Date(year, month - 1, day, hour, minute);
+
+                const reminderId = `reminder_${folderIndex}_${taskIndex}`;
+                if (now >= taskDate && !localStorage.getItem(reminderId)) {
+
+                    startSoundReminder();
+
+                    AlertComponent.show({
+                        message: task.name,
+                        type: "reminder",
+                        onClose: () => acceptReminder({
+                            folderId: folderIndex,
+                            taskId: taskIndex
+                        }),
+                    });
+
+                    localStorage.setItem(reminderId, 'shown');
+                }
+            });
+        });
+    });
+}
+function acceptReminder(data){
+    stopSoundReminder();
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('reminder_')) {
+            localStorage.removeItem(key);
+        }
+    }
+    fetch(`traking_helper.php?method=removeTaskReminder`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+            },
+        body: JSON.stringify({
+            folderId: data.folderId,
+            taskId: data.taskId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        openAllReminder('load')
+        loadTasks(data.folderId)
+    })
+}
+function openAllReminder(type){
+    const remindWinEl = document.querySelector('#reminder_container')
+    const listRem = remindWinEl.querySelector('.reminder_window')
+    const buttonRem = remindWinEl.querySelector('.reminder_button')
+    if (type === 'load'){
+        listRem.innerHTML = ``;
+        fetch(`/src/data/treking.JSON`)
+        .then(response => response.json())
+        .then(data => {
+
+            data.FOLDER.forEach((folder, folderIndex) => {
+                folder.tasks.forEach((task, taskIndex) => {
+                    if (task.data && task.time){
+                        const nowDate = new Date();
+
+                        const [day, month, year] = task.data.split('.');
+                        const taskDate = new Date(`${year}-${month}-${day}T${task.time}`);
+
+                        console.log(nowDate);
+                        console.log(taskDate);
+
+                        if (nowDate < taskDate){
+
+                            const taskRemEL = document.createElement('div')
+                            taskRemEL.className = `reminder_item`
+                            taskRemEL.id = `reminder_item_${folderIndex}_${taskIndex}`
+
+                            taskRemEL.innerHTML = `
+                                <div class="reminder_item_info">
+                                    <span class="name">${task.name}</span>
+                                    <div class="date_remind">
+                                        <span class="date">${task.data}</span>
+                                        <span class="time">${task.time}</span> 
+                                    </div>
+                                    <div class="remButton">
+                                        <button class="remButtonEl" onclick="removeReminder(${folderIndex}, ${taskIndex})">
+                                            <i class="bi bi-bell-slash-fill"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+
+                            taskRemEL.onclick = function () {
+                                const url = `/pages/tracking/tracking.php?folderIndex=${folderIndex+1}#task_${taskIndex}`;
+                                window.open(url, '_blank');
+                            }
+
+                            listRem.appendChild(taskRemEL)
+
+                        } else {
+
+                            fetch(`traking_helper.php?method=removeTaskReminder`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    folderId: folderIndex.toString(),
+                                    taskId: taskIndex.toString()
+                                })
+                            })
+
+                        }
+                    }
+                })
+            })
+        })
+    }
+    if (type === 'open'){
+        listRem.style.left = 'auto';
+        listRem.style.right = '0%';
+
+        buttonRem.querySelector('.all_reminder').remove();
+        const newBatton = document.createElement('button');
+        newBatton.className = "all_reminder_close";
+        newBatton.innerHTML = `<i class="bi bi-bell"></i>`
+        newBatton.onclick = function(){
+            openAllReminder('close')
+        }
+        buttonRem.appendChild(newBatton)
+    }
+    if (type === 'close'){
+        listRem.style.right = 'auto';
+        listRem.style.left = '100%';
+
+        buttonRem.querySelector('.all_reminder_close').remove();
+        const newBatton = document.createElement('button');
+        newBatton.className = "all_reminder";
+        newBatton.innerHTML = `<i class="bi bi-bell-fill"></i>`
+        newBatton.onclick = function(){
+            openAllReminder('open')
+        }
+        buttonRem.appendChild(newBatton)
+    }
+
 }
 
 
+function scrollToTaskFromHash(){
+
+    const hash = window.location.hash;
+
+    if (!hash) return;
+
+    const el = document.querySelector(hash);
+
+    if (el){
+        el.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+        el.classList.add('see');
+        setTimeout(() => {
+            el.classList.remove('see');
+        },1000)
+    }
+
+}
 document.addEventListener('DOMContentLoaded', function () {
-
-    
-
+    checkReminders();
+    setInterval(checkReminders, 10000);
+    openAllReminder('load')
 })

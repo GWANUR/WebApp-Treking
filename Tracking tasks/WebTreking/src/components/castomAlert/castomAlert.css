@@ -8,6 +8,7 @@
     z-index:9999;
     opacity:0;
     animation:fadeIn .2s forwards;
+    user-select: none;
 }
 
 .alert-box{
@@ -24,6 +25,7 @@
 .alert-title{
     display:block;
     font-size:16px;
+    text-align: center;
 }
 
 .alert-actions{
